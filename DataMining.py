@@ -1,5 +1,3 @@
-
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -9,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select  
 
 COLUMN_NAMES = "Market	Date	Variety	Grade	Arrivals	Unit	Min	Max	Modal	District".split()
-MARKETS = ["BENGALURU", "HUBBALI", "MYSURU", "DODDABALLAPUR"]
+MARKETS = ["BENGALURU", "HUBBALLI", "MYSURU", "DODDABALLAPUR"]
 MONTHS = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
 YEARS = [2002, 2024]
 
@@ -53,18 +51,22 @@ def scrape_krama_report(month, year, market, commodity):
     rows = driver.find_elements(By.XPATH, "//table[@id='_ctl0_content5_gv']/tbody/tr")
     prev = ""
     for row in rows:
-        columns = row.find_elements(By.TAG_NAME, "td")
-        data = [column.text for column in columns]
-        if len(data) != 10 or len(data[1]) != 10:
+        try:
+            columns = row.find_elements(By.TAG_NAME, "td")
+            data = [column.text for column in columns]
+            if len(data) != 10 or len(data[1]) != 10:
+                continue
+            if data[0]:
+                prev = data[0]
+            else:
+                data[0] = prev
+            ALL_DATA.append(data)
+        except Exception as e:
+            print(e)
             continue
-        if data[0]:
-            prev = data[0]
-        else:
-            data[0] = prev
-        ALL_DATA.append(data)
 
     # Add ALL_DATA to csv file
-    with open("krama_report.csv", "a") as f:
+    with open(f"krama_report_{market.lower()}.csv", "a") as f:
         for data in ALL_DATA:
             f.write(",".join(data) + "\n")
     
@@ -82,9 +84,10 @@ def get_all_reports():
 
 
 if __name__ == "__main__":
-
-    with open("krama_report.csv", "w") as f:
-        f.write(",".join(COLUMN_NAMES) + "\n")
+    # Create a new CSV file and write the column names
+    # for market in MARKETS:
+    #     with open(f"krama_report_{market.lower()}.csv", "w") as f:
+    #         f.write(",".join(COLUMN_NAMES) + "\n")
 
     # Path to ChromeDriver
     driver_path = "C:\Program Files (x86)\chromedriver.exe" 
@@ -100,8 +103,11 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(service=service1, options=chrome_options)
 
     # Get all the reports pertaining to Onions
-    get_all_reports()
+    # get_all_reports()
 
+    # Test the function with a single report
+    scrape_krama_report("SEPTEMBER", "2023", "MANGALURU", "ONION")
+    
     # Close the browser after scraping
     end = input("Press any key to exit")
     driver.quit()
