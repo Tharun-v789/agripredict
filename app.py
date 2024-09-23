@@ -110,4 +110,4 @@ def predict_prices(year, month, day, grade, variety):
 
 # Launch the app
 if __name__ == "__main__":
-    print(predict_prices(2025, 5, 30, "average", "local"))
+    print(predict_prices(2024, 9, 23, "average", "onion"))
