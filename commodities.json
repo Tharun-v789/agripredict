@@ -1,0 +1,30 @@
+{
+    "RICE": [
+        "BENGALURU",
+        "BIDAR",
+        "MYSURU",
+        "SHIVAMOGGA"
+    ],
+    "WHEAT": [
+        "BENGALURU",
+        "BIDAR",
+        "HUBBALLI",
+        "MYSURU",
+        "SHIVAMOGGA"
+    ],
+    "GROUNDNUT": [
+        "BENGALURU",
+        "MYSURU",
+        "YADGIR"
+    ],
+    "GREEN PEAS": [
+        "BENGALURU",
+        "MYSURU",
+        "SHIVAMOGGA"
+    ],
+    "TUR DAL": [
+        "BENGALURU",
+        "MYSURU",
+        "SHIVAMOGGA"
+    ]
+}

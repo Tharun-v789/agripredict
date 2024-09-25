@@ -6,17 +6,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support.ui import Select 
 import os
+import json
 
 COLUMN_NAMES = "Market	Date	Variety	Grade	Arrivals	Unit	Min	Max	Modal	District".split()
 MONTHS = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
 YEARS = [2021, 2023]
-COMMODITIES = {
-    "RICE": ['BENGALURU', 'BIDAR', 'MYSURU', 'SHIVAMOGGA'],
-    "WHEAT": ['BENGALURU', 'BIDAR', 'HUBBALLI', 'MYSURU', 'SHIVAMOGGA'],
-    "GROUNDNUT": ['BENGALURU', 'MYSURU', 'YADGIR'],
-    "GREEN PEAS": ['BENGALURU', 'MYSURU', 'SHIVAMOGGA'],
-    "TUR DAL": ['BENGALURU', 'MYSURU', 'SHIVAMOGGA'],
-}
+# Read commodities and markets from a JSON file
+with open("commodities.json", "r") as f:
+    COMMODITIES = json.load(f)
 
 # Folders to store the reports
 RAW_DATA_FOLDER = "raw_data"
@@ -103,32 +100,36 @@ def get_all_reports():
 
 
 if __name__ == "__main__":
+    run = False
 
-    for commodity in COMMODITIES:
-        if not os.path.exists(f"{RAW_DATA_FOLDER}/{commodity}"):
-            os.makedirs(f"{RAW_DATA_FOLDER}/{commodity}")
-        if not os.path.exists(f"{PROCESSED_DATA_FOLDER}/{commodity}"):
-            os.makedirs(f"{PROCESSED_DATA_FOLDER}/{commodity}")
+    if run:
+        for commodity in COMMODITIES:
+            if not os.path.exists(f"{RAW_DATA_FOLDER}/{commodity}"):
+                os.makedirs(f"{RAW_DATA_FOLDER}/{commodity}")
+            if not os.path.exists(f"{PROCESSED_DATA_FOLDER}/{commodity}"):
+                os.makedirs(f"{PROCESSED_DATA_FOLDER}/{commodity}")
 
-    # Path to ChromeDriver
-    driver_path = "ChromeDriver\chromedriver.exe" 
+        # Path to ChromeDriver
+        driver_path = "ChromeDriver\chromedriver.exe" 
 
-    # Setup Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--headless") # Run Chrome in headless mode
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
+        # Setup Chrome options
+        chrome_options = Options()
+        chrome_options.add_argument("--headless") # Run Chrome in headless mode
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
 
-    # Initialize the driver
-    service1 = Service(driver_path)
-    driver = webdriver.Chrome(service=service1, options=chrome_options)
+        # Initialize the driver
+        service1 = Service(driver_path)
+        driver = webdriver.Chrome(service=service1, options=chrome_options)
 
-    # Get all the reports pertaining to Onions
-    get_all_reports()
+        # Get all the reports pertaining to Onions
+        get_all_reports()
 
-    # Test the function with a single report
-    # scrape_krama_report("SEPTEMBER", "2023", "MANGALURU", "ONION")
-    
-    # Close the browser after scraping
-    end = input("Press any key to exit")
-    driver.quit()
+        # Test the function with a single report
+        # scrape_krama_report("SEPTEMBER", "2023", "MANGALURU", "ONION")
+        
+        # Close the browser after scraping
+        end = input("Press any key to exit")
+        driver.quit()
+    else:
+        print("Scraping is disabled")
