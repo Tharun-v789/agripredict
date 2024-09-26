@@ -131,5 +131,43 @@ def run_scraping(run=False):
     else:
         print("Scraping is disabled")
 
+def run_test_data_scraping(run=False):
+    if not run:
+        print("Test Data Scraping is disabled")
+        return
+    
+    global driver, RAW_DATA_FOLDER, YEARS
+    YEARS = [2024, 2024]
+    RAW_DATA_FOLDER = "test_data"
+
+    # Create test data folder if it doesn't exist
+    if not os.path.exists(RAW_DATA_FOLDER):
+        os.makedirs(RAW_DATA_FOLDER)
+    for commodity in COMMODITIES:
+        if not os.path.exists(f"{RAW_DATA_FOLDER}/{commodity}"):
+            os.makedirs(f"{RAW_DATA_FOLDER}/{commodity}")
+        if not os.path.exists(f"{PROCESSED_DATA_FOLDER}/{commodity}"):
+            os.makedirs(f"{PROCESSED_DATA_FOLDER}/{commodity}")
+
+    # Path to ChromeDriver
+    driver_path = r"ChromeDriver\chromedriver.exe"
+
+    # Setup Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless") # Run Chrome in headless mode
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    # Initialize the driver
+    service1 = Service(driver_path)
+    driver = webdriver.Chrome(service=service1, options=chrome_options)
+
+    get_all_reports()
+
+    # Close the browser after scraping
+    end = input("Press any key to exit")
+    driver.quit()
+
 if __name__ == "__main__":
     run_scraping()
+    run_test_data_scraping()
