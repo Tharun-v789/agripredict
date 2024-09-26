@@ -88,8 +88,6 @@ def scrape_krama_report(month, year, market, commodity):
 
 def get_all_reports():
     print(COLUMN_NAMES)
-    COMMODITIES.pop('RICE')
-    COMMODITIES.pop('WHEAT')
     for commodity in COMMODITIES:
         MARKETS = COMMODITIES[commodity]
         for market in MARKETS:
@@ -99,10 +97,9 @@ def get_all_reports():
 
 
 
-if __name__ == "__main__":
-    run = False
-
+def run_scraping(run=False):
     if run:
+        global driver
         for commodity in COMMODITIES:
             if not os.path.exists(f"{RAW_DATA_FOLDER}/{commodity}"):
                 os.makedirs(f"{RAW_DATA_FOLDER}/{commodity}")
@@ -110,7 +107,7 @@ if __name__ == "__main__":
                 os.makedirs(f"{PROCESSED_DATA_FOLDER}/{commodity}")
 
         # Path to ChromeDriver
-        driver_path = "ChromeDriver\chromedriver.exe" 
+        driver_path = r"ChromeDriver\chromedriver.exe" 
 
         # Setup Chrome options
         chrome_options = Options()
@@ -133,3 +130,6 @@ if __name__ == "__main__":
         driver.quit()
     else:
         print("Scraping is disabled")
+
+if __name__ == "__main__":
+    run_scraping()
